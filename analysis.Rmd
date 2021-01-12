@@ -1,24 +1,74 @@
 ---
 title: "Data Analysis for the AI Paper"
 description: |
-  A new article created using the Distill format.
+  The aim of this study was to analyse the role of acceptance and confidence in technology in regards to the need for regula- tions to ensure the fair use of artificial intelligence. Scientific discussions of artificial intelligence are conducted in a variety of disciplines. The connections between social perception of the fairness of artificial intel- ligence, the acceptance of technology and the establishment of artificial intelligence had not been sufficiently investigated yet. In order to gain new insights, a quantitative questionnaire was used to empirically and deductively study the previously formulated research question and esta- blished hypotheses. Overall, the results suggest confidence in technology has an impact on assessing the fairness of AI, and it correlates with regu- latory needs. Furthermore, the assessment of AI fairness and regulatory needs influence each other. According to this study, acceptance of tech- nology does not correlate with regulatory necessities. To conclude, some relevant topics are presented for possible future research.
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: Laila Wegner 
+    affiliation: Human-Computer Interaction Center - RWTH Aachen University
+    affiliation_url: https://www.comm.rwth-aachen.de
+  - name: Yana Houben
+    affiliation: Human-Computer Interaction Center - RWTH Aachen University
+    affiliation_url: https://www.comm.rwth-aachen.de
+  - name: Martina Ziefle 
+    affiliation: Human-Computer Interaction Center - RWTH Aachen University
+    affiliation_url: https://www.comm.rwth-aachen.de
+  - name: André Calero Valdez 
+    url: https://calerovaldez.com
+    affiliation: Human-Computer Interaction Center - RWTH Aachen University
+    affiliation_url: https://www.comm.rwth-aachen.de
 date: "`r Sys.Date()`"
 output: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(seminr)
+
+daten <- read_rds("data/anonymized.sav") %>% 
+  filter(Progress > 50)
+
+
 ```
 
-Distill is a publication format for scientific and technical writing, native to the web. 
 
-Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
+# Hypothesen
 
+```{r}
+messmodel <- constructs(
+  reflective("ATI", multi_items("ATI_", 1:9))
+)
+
+plot_model(messmodel)
+```
+
+
+
+# Skalen Berechnung
+
+```{r paged.print=TRUE}
+ati_daten <- daten %>% 
+  select(starts_with("ATI_")) %>% 
+  select(-starts_with("ATI_DO")) %>% hcictools::auto_score("ATI")
+```
+
+
+```{r}
+daten <- daten %>% left_join(ati_daten) 
+
+t_test <- t.test(daten$ATI ~ daten$Geschlecht)
+
+
+```
+
+
+
+```{r}
+daten %>% select(starts_with("Regulierungsb"), starts_with("Fairness")) %>% cor(use = "pairwise.complete.obs")
+
+
+daten %>% select(starts_with("Fairness")) %>% hcictools::auto_score("Fairness")
+```
 
 
 
