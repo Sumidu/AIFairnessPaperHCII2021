@@ -58,7 +58,7 @@ daten <- daten %>% left_join(ati_daten)
 
 t_test <- t.test(daten$ATI ~ daten$Geschlecht)
 
-
+apastats::describe.ttest(t_test, show.mean = T)
 ```
 
 
